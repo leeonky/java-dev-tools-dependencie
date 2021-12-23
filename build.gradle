@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'de.marcphilipp.nexus-publish' version '0.2.0'
+}
+
+apply plugin: 'signing'
+
+group = 'com.github.leeonky'
+version = '0.0.1' + System.env.VERSION_SCOPE
+
+repositories {
+    mavenCentral()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = project.name
+                description = project.name
+                url = 'https://github.com/leeonky/' + project.name
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'leeonky'
+                        name = 'Liangchen'
+                        email = 'leeonky@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:https://github.com/leeonky/' + project.name + '.git'
+                    developerConnection = 'scm:git:git@github.com:leeonky' + project.name + '.git'
+                    url = 'https://github.com/leeonky/' + project.name + '.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+nexusPublishing {
+    username = System.env.ossrhUsername
+    password = System.env.ossrhPassword
+}
+
+task currentVersion {
+    doLast {
+        println project.version
+    }
+}
